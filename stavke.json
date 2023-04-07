@@ -11,7 +11,7 @@
         "id": 2,
         "tip": "KNJIGA",
         "naslov": "Zlocin i kazna",
-        "status": "SLOBODAN",
+        "status": "ZAUZET",
         "autor": "Dostojevski",
         "izdavac": "Laguna"
     },
