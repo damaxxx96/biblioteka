@@ -111,8 +111,8 @@ class Biblioteka:
                 try:
                     stavka.status = Status.ZAUZET
                     f = open("stavke.json", "w")
-                    stavke_json = json.dumps(self.stavke, default=lambda o: o.__dict__, indent=4)
-                    f.write(stavke_json)
+                    for stavka in self.stavke:
+                        print(stavka.__dict__)
                     f.close()
 
                     prijavljeni_clan.pozajmljene_stavke.append(stavka.id)
