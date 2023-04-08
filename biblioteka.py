@@ -20,12 +20,18 @@ class Biblioteka:
 
         for ucitana_stavka in ucitane_stavke:
             if ucitana_stavka["tip"] == TipStavka.KNJIGA.name:
+                status_knjige = None
+                if ucitana_stavka["status"] == Status.ZAUZET.name:
+                    status_knjige = Status.ZAUZET
+                else:
+                    status_knjige = Status.SLOBODAN
+                
                 knjiga = Knjiga(
-                    status=ucitana_stavka["status"],
+                    status=status_knjige,
                     autor=ucitana_stavka["autor"],
                     izdavac=ucitana_stavka["izdavac"],
                     naslov=ucitana_stavka["naslov"],
-                    id=ucitana_stavka["id"]
+                    id=ucitana_stavka["id"],
                 )
 
                 self.stavke.append(knjiga)
@@ -56,8 +62,8 @@ class Biblioteka:
                 print("Naslov knjige: " + stavka.naslov)
                 print("Naziv autora: " + stavka.autor)
                 print("Naziv izdavaca: " + stavka.izdavac)
-                print("Dostupnost: " + stavka.status)
-                if stavka.status == Status.ZAUZET.name:
+                print("Dostupnost: " + stavka.status.name)
+                if stavka.status == Status.ZAUZET:
                     clan = next(filter(lambda clan: stavka.id in clan.pozajmljene_stavke, self.clanovi))
 
                     if isinstance(clan, Clan):
@@ -71,9 +77,11 @@ class Biblioteka:
         """
         for stavka in self.stavke:
             if isinstance (stavka,Knjiga):
-                if stavka.status == Status.SLOBODAN.name:
+                if stavka.status == Status.SLOBODAN:
                     print("--------------------------")
                     print ("Naslov knjige: " + stavka.naslov)
+                    print("--------------------------")
+                    
     
     def prikaz_svih_clanova(self) -> None:
         for clan in self.clanovi:
@@ -105,29 +113,45 @@ class Biblioteka:
         os.system("cls")
         self.prikaz_svih_dostupnih_stavki()
         unos = input("Unesi ime stavke: ")
+        os.system("cls")
+        
         try:
-            stavka = next(filter(lambda stavka: unos == stavka.naslov, self.stavke))
-            if isinstance(stavka, Knjiga):
-                try:
-                    stavka.status = Status.ZAUZET
-                    f = open("stavke.json", "w")
-                    for stavka in self.stavke:
-                        print(stavka.__dict__)
-                    f.close()
+            pozajmljena_stavka = next(filter(lambda stavka: unos == stavka.naslov, self.stavke))
 
-                    prijavljeni_clan.pozajmljene_stavke.append(stavka.id)
-                    f = open("clanovi.json", "w")
-                    clanovi_json = json.dumps(self.clanovi, default=lambda o: o.__dict__, indent=4)
-                    f.write(clanovi_json)
-                    f.close()
+            try:
+                pozajmljena_stavka.status = Status.ZAUZET
+                
+                
+                # SNIMANJE STAVKI U JSON
+                stavke_za_snimanje: list[Stavka] = []
+                for stavka in self.stavke:
+                    if isinstance(stavka, Knjiga):
+                        stavke_za_snimanje.append(stavka.knjiga_to_dict())
+                    else:
+                        stavke_za_snimanje.append(stavka.stavka_to_dict())
+                                           
+                f = open("stavke.json", "w")
+                json.dump(stavke_za_snimanje, f, indent=4)
+                f.close()
+                ##########################
+                
+                prijavljeni_clan.pozajmljene_stavke.append(pozajmljena_stavka.id)
+                
+                # SNIMANJE CLANOVA U JSON
+                clanovi_za_snimanje = [clan.clan_to_dict() for clan in self.clanovi]
+                
+                f = open("clanovi.json", "w")
+                json.dump(clanovi_za_snimanje, f, indent=4)
+                f.close()
+                ##########################
 
-                    transakcija = Transakcija(stavka, prijavljeni_clan, TipTransakcije.POZAJMICA)
-                    transakcija.snimi_transakciju_pozajmica()
-                    print("Pozajmljena knjiga: " + stavka.naslov)
-                except Exception as e:
-                    print("Problem kod pozajmljivanja stavke")
+                transakcija = Transakcija(pozajmljena_stavka, prijavljeni_clan, TipTransakcije.POZAJMICA)
+                transakcija.snimi_transakciju_pozajmica()
+                print("Pozajmljena knjiga: " + pozajmljena_stavka.naslov)
+            except Exception as e:
+                print("Problem kod pozajmljivanja stavke")
         except:
-            print("Ne postoji izabrana knjiga")
+            print("Ne postoji izabrana stavka")
        
 
 

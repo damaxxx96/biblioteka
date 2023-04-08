@@ -7,3 +7,13 @@ class Stavka:
         self.status = status
         self.id = id
         self.tip = tip
+
+    def stavka_to_dict(self):
+        stavka = {
+            "id": self.id,
+            "naslov": self.naslov,
+            "status": self.status.name,
+            "tip": self.tip.name,
+        }
+    
+        return stavka

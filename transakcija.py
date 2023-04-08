@@ -16,8 +16,8 @@ class Transakcija:
         
     def snimi_transakciju_pozajmica(self):
         f = open("transakcije.txt", "a")
-        f.writelines("--------------------------")
-        f.writelines("Clan " + self.clan.ime + " " + self.clan.prezime + " je pozajmio stavku " + self.stavka.naslov)
-        f.writelines("Datuma " + self.vreme_transakcije)
-        f.writelines("--------------------------")
+        f.write("--------------------------\n")
+        f.write("Clan " + self.clan.ime + " " + self.clan.prezime + " je pozajmio stavku " + self.stavka.naslov + '\n')
+        f.write("Datuma " + str(self.vreme_transakcije) + '\n')
+        f.write("--------------------------\n")
         f.close()

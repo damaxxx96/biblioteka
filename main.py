@@ -1,6 +1,7 @@
 from biblioteka import Biblioteka
 from clan import Clan
 import os
+import sys
 
 biblioteka = Biblioteka()
 biblioteka.ucitaj_stavke()
@@ -28,8 +29,8 @@ while True:
                 print ("2.Prikaz svih dostupnih stavki u biblioteci")
                 print ("3.Prikaz svih clanova u biblioteci")
                 print ("4.Prikaz svih stavki pozajmljenih od strane odredjenih clanova")
-                print ("5.Pozajmiti stavku")
-                print ("6.Vratiti stavku")
+                print ("5.Pozajmi stavku")
+                print ("6.Vrati stavku")
                 print ("7.Izlaz iz programa")
 
 
@@ -46,7 +47,11 @@ while True:
                     biblioteka.prikaz_svih_pozajmljenih_stavki_jednog_clana()
                 elif unos == "5":
                     biblioteka.pozajmi_stavku(prijavljeni_clan)  
-    except:
+                elif unos == "7":
+                    sys.exit()
+                else:
+                    print("Pogresan unos")
+    except Exception as e:
         print("Nepostojeci clan!")
 
 
