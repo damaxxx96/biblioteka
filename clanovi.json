@@ -4,17 +4,17 @@
         "ime": "Damjan",
         "prezime": "Ilic",
         "pozajmljene_stavke": [
-            1
+            4
         ]
-        
     },
     {
         "id": 2,
         "ime": "Aleksa",
         "prezime": "Ignjatovic",
         "pozajmljene_stavke": [
-            5, 2
+            5,
+            2,
+            3
         ]
-        
     }
 ]

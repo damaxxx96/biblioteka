@@ -123,7 +123,7 @@ class Biblioteka:
                 
                 
                 # SNIMANJE STAVKI U JSON
-                stavke_za_snimanje: list[Stavka] = []
+                stavke_za_snimanje: list[dict] = []
                 for stavka in self.stavke:
                     if isinstance(stavka, Knjiga):
                         stavke_za_snimanje.append(stavka.knjiga_to_dict())
@@ -146,13 +146,49 @@ class Biblioteka:
                 ##########################
 
                 transakcija = Transakcija(pozajmljena_stavka, prijavljeni_clan, TipTransakcije.POZAJMICA)
-                transakcija.snimi_transakciju_pozajmica()
+                transakcija.snimi_transakciju()
                 print("Pozajmljena knjiga: " + pozajmljena_stavka.naslov)
             except Exception as e:
                 print("Problem kod pozajmljivanja stavke")
         except:
             print("Ne postoji izabrana stavka")
-       
+
+    def vrati_stavku(self, prijavljeni_clan: Clan) -> None:
+        os.system("cls")
+        knjige = filter(lambda stavka: stavka.id in prijavljeni_clan.pozajmljene_stavke, self.stavke)
+        for knjiga in knjige:
+            print ("Pozajmljena knjiga: " + knjiga.naslov)
+        
+        unos = input("Unesite naslov knjige koje zelite da vratiti: ")
+        os.system("cls")
+        
+        pozajmljena_stavka = next(filter(lambda stavka: unos == stavka.naslov, self.stavke))
+
+        pozajmljena_stavka.status = Status.SLOBODAN
+
+        stavke_za_snimanje: list[dict] = []
+        for stavka in self.stavke:
+            if isinstance(stavka, Knjiga):
+                stavke_za_snimanje.append(stavka.knjiga_to_dict())
+            else:
+                stavke_za_snimanje.append(stavka.stavka_to_dict())
+                                    
+        f = open("stavke.json", "w")
+        json.dump(stavke_za_snimanje, f, indent=4)
+        f.close()
+
+        prijavljeni_clan.pozajmljene_stavke.remove(pozajmljena_stavka.id)
+
+        clanovi_za_snimanje = [clan.clan_to_dict() for clan in self.clanovi]
+                
+        f = open("clanovi.json", "w")
+        json.dump(clanovi_za_snimanje, f, indent=4)
+        f.close()
+
+        transakcija = Transakcija(pozajmljena_stavka ,prijavljeni_clan, TipTransakcije.POVRAT)
+        transakcija.snimi_transakciju()
+
+
 
 
         

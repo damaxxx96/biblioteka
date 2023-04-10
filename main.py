@@ -46,7 +46,9 @@ while True:
                 elif unos == "4":
                     biblioteka.prikaz_svih_pozajmljenih_stavki_jednog_clana()
                 elif unos == "5":
-                    biblioteka.pozajmi_stavku(prijavljeni_clan)  
+                    biblioteka.pozajmi_stavku(prijavljeni_clan) 
+                elif unos == "6":
+                    biblioteka.vrati_stavku(prijavljeni_clan)     
                 elif unos == "7":
                     sys.exit()
                 else:

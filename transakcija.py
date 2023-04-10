@@ -14,10 +14,12 @@ class Transakcija:
         self.vreme_transakcije = datetime.datetime.now()
         self.tip_transakcije: TipTransakcije = tip_transakcije
         
-    def snimi_transakciju_pozajmica(self):
+    def snimi_transakciju(self):
+        akcija = "pozajmio" if self.tip_transakcije == TipTransakcije.POZAJMICA else "vratio"
+
         f = open("transakcije.txt", "a")
         f.write("--------------------------\n")
-        f.write("Clan " + self.clan.ime + " " + self.clan.prezime + " je pozajmio stavku " + self.stavka.naslov + '\n')
+        f.write("Clan " + self.clan.ime + " " + self.clan.prezime + " je " + akcija + " stavku " + self.stavka.naslov + '\n')
         f.write("Datuma " + str(self.vreme_transakcije) + '\n')
         f.write("--------------------------\n")
         f.close()
